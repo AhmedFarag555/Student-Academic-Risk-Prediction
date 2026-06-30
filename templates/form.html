@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Risk Prediction</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            justify-content: center; /* أفقي في النص */
+            margin-top: 50px;       /* مسافة من فوق */
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+        }
+        input, select, button {
+            padding: 5px;
+            margin: 5px;
+            width: 200px;
+        }
+        button {
+            cursor: pointer;
+        }
+        .risk-high { color: red; font-weight: bold; }
+        .risk-medium { color: orange; font-weight: bold; }
+        .risk-low { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Enter Student Features</h2>
+        <form method="post">
+            {% for col in columns %}
+                <label>{{ col }}:</label><br>
+                
+                {% if col in dropdown_values %}
+                    <select name="{{ col }}">
+                        <option value="">Select {{ col }}</option>
+                        {% for val in dropdown_values[col] %}
+                            <option value="{{ val }}">{{ val }}</option>
+                        {% endfor %}
+                    </select><br>
+                
+                {% elif col in numeric_limits %}
+                    <input type="number" 
+                           name="{{ col }}" 
+                           min="{{ numeric_limits[col]['min'] }}" 
+                           max="{{ numeric_limits[col]['max'] }}"><br>
+                
+                {% elif col in ["G1", "G2", "G3"] %}
+                    <input type="number" name="{{ col }}" min="0" max="20"><br>
+                
+                {% else %}
+                    <input type="text" name="{{ col }}"><br>
+                {% endif %}
+            {% endfor %}
+            
+            <button type="submit">Predict Risk</button>
+        </form>
+
+        {% if prediction %}
+            <h3>
+                Predicted Risk: 
+                {% if prediction == "High Risk" %}
+                    <span class="risk-high">{{ prediction }}</span>
+                {% elif prediction == "Medium Risk" %}
+                    <span class="risk-medium">{{ prediction }}</span>
+                {% else %}
+                    <span class="risk-low">{{ prediction }}</span>
+                {% endif %}
+            </h3>
+        {% endif %}
+    </div>
+</body>
+</html>
+
